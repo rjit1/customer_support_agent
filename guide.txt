@@ -1,0 +1,178 @@
+# 🎯 Project Guide: Smart Toy Store AI Chat System (Brand Name: Gurtoy)
+
+This guide outlines the full system architecture, tech stack, implementation plan, and deployment setup to build a smart, multilingual AI-powered customer support chat system for the Gurtoy toy store using Supabase, A4F GPT-5 Nano, and a colorful React frontend.
+
+---
+
+## 🧩 SYSTEM OVERVIEW
+
+**Goal:** A human-like AI assistant for the Gurtoy toy store that can:
+- Answer customer queries
+- Suggest products from the store
+- Remember past conversations (chat memory)
+- Reply in the user's language (auto-detected)
+- Provide a beautiful and playful chat experience
+
+This will be deployed as a **separate page linked from the main MyDukaan site**, so users can get support easily.
+
+---
+
+## ⚙️ TECH STACK
+
+| Layer     | Tool/Platform              |
+|-----------|----------------------------|
+| Frontend  | React + Next.js            |
+| Styling   | Tailwind CSS + Framer Motion |
+| Backend   | Supabase (DB, Auth, Storage, Edge Functions) |
+| AI Agent  | GPT-5 Nano via A4F         |
+| Hosting   | Vercel                     |
+
+---
+
+## 🗃️ SUPABASE SETUP
+
+### 📦 1. Supabase Storage Bucket
+
+Create a bucket named: `ai-context`
+
+Upload the following `.txt` files (manually managed by developer):
+- `product.txt` – list of product URLs or slugs
+- `contact.txt` – contact information and support details
+- `privacy.txt` – privacy policy content
+- `detail.txt` – about the brand, general info, FAQs
+
+These files are dynamically loaded during AI API calls.
+
+---
+
+### 🧠 2. Supabase Database Schema
+
+```sql
+-- Users Table
+CREATE TABLE users (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  email TEXT,
+  name TEXT,
+  preferred_language TEXT,
+  created_at TIMESTAMP DEFAULT now()
+);
+
+-- Chats Table
+CREATE TABLE chats (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid REFERENCES users(id),
+  message TEXT,
+  role TEXT, -- 'user' or 'assistant'
+  created_at TIMESTAMP DEFAULT now()
+);
+```
+
+---
+
+## 💬 CHAT UI DESIGN (React + Tailwind)
+
+- **Theme**: Colorful, playful, optimized for a toy store
+- **Font**: Fredoka or Poppins for a fun, rounded look
+- **UI Components**:
+  - `Chat.tsx`: Main interface
+  - `MessageBubble.tsx`: For user/assistant messages
+  - `TypingIndicator.tsx`: Framer Motion 3-dot animation
+- **Avatars**: Friendly cartoon assistant + user emoji/icon
+- **Responsive**: Mobile-first design
+
+---
+
+## 🧠 CHAT API HANDLER (`/pages/api/ai-chat.ts`)
+
+Responsible for:
+- Fetching user context (chat history, preferences)
+- Loading `.txt` files from Supabase Storage
+- Constructing smart system prompt
+- Calling GPT-5 Nano from A4F with message + context
+- Storing response to Supabase DB
+
+```ts
+const contextFiles = await loadContextFilesFromSupabase([
+  'product.txt', 'contact.txt', 'privacy.txt', 'detail.txt'
+]);
+const memory = await getChatHistory(user_id);
+const prompt = generateSystemPrompt(user, memory, contextFiles);
+const response = await callGPT5Nano(prompt, userMessage);
+```
+
+---
+
+## 🔄 MEMORY SYSTEM
+
+- Every user message is stored in the `chats` table
+- On each message, last 20–30 messages are loaded to maintain continuity
+- Optional: summarize memory for longer conversations
+
+---
+
+## 🌐 MULTILINGUAL SUPPORT
+
+Handled natively by **GPT-5 Nano via A4F** — no special setup needed. Just forward the user message, and the model will auto-detect and respond appropriately.
+
+---
+
+## 🧪 OPTIONAL SMART FEATURES
+
+- File/image upload (via Supabase Storage)
+- Feedback buttons (Was this helpful? 👍👎)
+- Smart fallback to human support 
+- Product quiz or wizard
+- Admin dashboard (for future)
+
+---
+
+## 📦 FOLDER STRUCTURE
+
+```
+/components
+  Chat.tsx
+  MessageBubble.tsx
+  TypingIndicator.tsx
+
+/pages/api
+  ai-chat.ts
+
+/lib
+  supabaseClient.ts
+  loadContextFiles.ts
+  getChatMemory.ts
+
+/supabase
+  schema.sql (users + chats)
+  upload-script.ts (optional helper)
+```
+
+---
+
+## 🚀 DEPLOYMENT NOTES
+
+- Host frontend on Vercel (optimized for Next.js)
+- Use Supabase Edge Functions if backend logic needs speed
+- Protect A4F API keys with `.env`
+
+---
+
+## ✅ MANAGED BY DEVELOPER
+
+- Manual uploads to `ai-context/` Supabase Storage bucket
+- Maintain content of `.txt` files
+- Manage A4F API key & rate limit
+- Update context files as the business grows
+
+---
+
+## ✅ FINAL LAUNCH TIPS
+
+- Link this AI assistant chat page from your **MyDukaan** main site
+- Start with clean, helpful `.txt` files (product, contact, privacy, detail)
+- Design a fun and magical user experience (toy-store energy)
+- GPT-5 Nano will handle language, reasoning, and tone
+
+---
+
+You're now set to build **Gurtoy's smart AI assistant** — beautiful, multilingual, memory-enabled, and full of personality.

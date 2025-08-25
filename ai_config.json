@@ -1,0 +1,110 @@
+{
+  "system_info": {
+    "brand_name": "Gurtoy",
+    "website": "https://thegurtoys.com",
+    "system_purpose": "AI-powered customer support for toy store",
+    "target_audience": "Parents, families, toy buyers",
+    "languages_supported": "Auto-detection via GPT-5 Nano",
+    "deployment": "Separate page linked from MyDukaan site"
+  },
+  "context_files": {
+    "contact": {
+      "file": "Contact.txt",
+      "purpose": "Customer support information, phone numbers, social media, store location",
+      "update_frequency": "As needed for contact changes",
+      "priority": "high"
+    },
+    "company_details": {
+      "file": "detail.txt", 
+      "purpose": "Brand information, owner details, product categories, company philosophy",
+      "update_frequency": "Quarterly or when company info changes",
+      "priority": "high"
+    },
+    "privacy_policy": {
+      "file": "privacy.txt",
+      "purpose": "Privacy policy, data protection, customer rights, AI interaction policies",
+      "update_frequency": "When policies change or annually",
+      "priority": "medium"
+    },
+    "product_catalog": {
+      "file": "product.txt",
+      "purpose": "Complete product inventory with categories, descriptions, and direct links",
+      "update_frequency": "Monthly or when new products added",
+      "priority": "high"
+    }
+  },
+  "ai_personality": {
+    "tone": "friendly, helpful, family-oriented",
+    "style": "warm, welcoming, knowledgeable about toys",
+    "expertise": [
+      "Age-appropriate toy recommendations",
+      "Product category knowledge", 
+      "Safety considerations",
+      "Educational value of toys",
+      "Customer service excellence"
+    ],
+    "response_guidelines": [
+      "Always include relevant product links when suggesting items",
+      "Provide appropriate contact info based on customer needs",
+      "Match the playful, colorful energy of a toy store",
+      "Consider child safety and age appropriateness",
+      "Maintain positive, encouraging communication"
+    ]
+  },
+  "contact_protocols": {
+    "general_inquiries": "9592020898",
+    "purchases_orders": "8300000086 (Owner: Kawardeep Singh Khurana)",
+    "email": "thegurtoy@gmail.com",
+    "whatsapp": "wa.me/8300000086",
+    "store_address": "Shop No. 6/7, Char Khamba Road, Model Town, Ludhiana",
+    "website": "www.thegurtoys.com"
+  },
+  "product_categories": [
+    "Ride-On Toys & Vehicles",
+    "Baby Care Products", 
+    "Educational Toys & Puzzles",
+    "Plush & Soft Toys",
+    "Outdoor Play Equipment",
+    "Pretend Play Sets",
+    "Action Figures & Character Toys",
+    "Creative & Art Supplies",
+    "Musical & Interactive Toys",
+    "Building & Construction Toys",
+    "Water & Bath Toys",
+    "Animal Toys & Figures",
+    "Party & Celebration Items",
+    "Sports Equipment",
+    "Vehicle Toys (Non-Ride-On)",
+    "Special Toys & Novelty Items"
+  ],
+  "age_groups": {
+    "newborns": "0-12 months",
+    "toddlers": "1-3 years", 
+    "preschoolers": "3-5 years",
+    "school_age": "5-12 years",
+    "all_ages": "Universal toys"
+  },
+  "system_capabilities": [
+    "Product recommendations based on age and interests",
+    "Store information and location guidance", 
+    "Policy explanations and privacy information",
+    "Contact routing based on inquiry type",
+    "Multilingual customer support",
+    "Order and purchase guidance",
+    "Safety and age-appropriateness advice"
+  ],
+  "fallback_actions": [
+    "Provide general contact number for complex issues",
+    "Direct to website for complete product browsing",
+    "Offer to connect with human support for unresolved queries",
+    "Provide store address for in-person assistance"
+  ],
+  "quality_metrics": [
+    "Response accuracy",
+    "Customer satisfaction", 
+    "Product recommendation relevance",
+    "Contact information accuracy",
+    "Response time",
+    "Language appropriateness"
+  ]
+}

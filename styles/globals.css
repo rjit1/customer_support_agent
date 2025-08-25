@@ -1,0 +1,246 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom scrollbar for webkit browsers */
+@layer utilities {
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    @apply bg-gray-100 rounded-full;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded-full;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400;
+  }
+}
+
+/* Base styles */
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+    Oxygen, Ubuntu, sans-serif;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Remove focus outline for mouse users but keep for keyboard users */
+.js-focus-visible :focus:not(.focus-visible) {
+  outline: none;
+}
+
+/* Custom animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes wiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(3deg);
+  }
+  75% {
+    transform: rotate(-3deg);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-wiggle {
+  animation: wiggle 0.5s ease-in-out;
+}
+
+/* Chat message animations */
+.message-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.message-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+/* Typing indicator dots */
+@keyframes typing-dot {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  30% {
+    transform: translateY(-10px);
+    opacity: 1;
+  }
+}
+
+.typing-dot {
+  animation: typing-dot 1.4s ease-in-out infinite;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* Custom gradient backgrounds */
+.bg-gradient-toy {
+  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+}
+
+.bg-gradient-chat {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Custom button hover effects */
+.btn-toy-primary {
+  @apply bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-semibold py-3 px-6 rounded-xl shadow-hover transition-all duration-300;
+}
+
+.btn-toy-primary:hover {
+  @apply shadow-lg transform -translate-y-0.5;
+}
+
+/* Loading spinner */
+.loading-spinner {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #f97316;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Custom selection colors */
+::selection {
+  background-color: #fed7aa;
+  color: #c2410c;
+}
+
+::-moz-selection {
+  background-color: #fed7aa;
+  color: #c2410c;
+}
+
+/* Focus styles for accessibility */
+.focus-visible {
+  @apply ring-2 ring-primary-400 ring-offset-2 outline-none;
+}
+
+/* Custom radio and checkbox styles */
+input[type="radio"]:checked {
+  @apply bg-primary-500 border-primary-500;
+}
+
+input[type="checkbox"]:checked {
+  @apply bg-primary-500 border-primary-500;
+}
+
+/* Disabled state styles */
+.disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+/* Message bubble hover effects */
+.message-bubble:hover {
+  @apply transform scale-105 transition-transform duration-200;
+}
+
+/* Emoji animation */
+@keyframes bounce-emoji {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  40%, 43% {
+    transform: translate3d(0, -10px, 0);
+  }
+  70% {
+    transform: translate3d(0, -5px, 0);
+  }
+  90% {
+    transform: translate3d(0, -2px, 0);
+  }
+}
+
+.emoji-bounce {
+  animation: bounce-emoji 1s ease infinite;
+}
+
+/* Custom glassmorphism effect */
+.glass {
+  @apply bg-white/20 backdrop-blur-lg border border-white/20;
+}
+
+/* Custom card styles */
+.card-toy {
+  @apply bg-white/90 backdrop-blur-sm rounded-3xl shadow-soft border border-gray-100/50;
+}
+
+.card-toy:hover {
+  @apply shadow-hover transform -translate-y-1 transition-all duration-300;
+}
+
+/* Chat input animations */
+.chat-input:focus {
+  @apply ring-2 ring-primary-400 ring-opacity-50 border-primary-400;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+}
+
+/* Responsive text sizes */
+@screen sm {
+  .text-responsive-lg {
+    font-size: 1.25rem;
+  }
+}
+
+@screen md {
+  .text-responsive-lg {
+    font-size: 1.5rem;
+  }
+}
+
+@screen lg {
+  .text-responsive-lg {
+    font-size: 1.875rem;
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    color: black !important;
+    background: white !important;
+  }
+}

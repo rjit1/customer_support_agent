@@ -2,6 +2,8 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { loadContextFiles } from '../../lib/loadContextFiles'
 import { getChatHistory, saveChatMessage, formatChatHistoryForAI } from '../../lib/getChatMemory'
 import { createUser, getUserById } from '../../lib/supabaseClient'
+import { getCachedContextFiles } from '../../lib/contextCache'
+import { getSmartProductContext } from '../../lib/productMatcher'
 import { v4 as uuidv4 } from 'uuid'
 
 interface ChatRequest {
@@ -12,9 +14,9 @@ interface ChatRequest {
 }
 
 /**
- * Generate system prompt with context and memory
+ * Generate system prompt with context and memory - OPTIMIZED VERSION
  */
-function generateSystemPrompt(contextFiles: any, chatHistory: string, userName?: string): string {
+function generateSystemPrompt(contextFiles: any, chatHistory: string, smartProducts: string, userName?: string): string {
   return `You are Gurtoy AI, the professional customer support assistant for Gurtoy toy store (thegurtoys.com). You provide quick, helpful, and accurate responses to customer inquiries.
 
 COMMUNICATION STYLE:
@@ -38,8 +40,8 @@ ${contextFiles.detail || 'Loading company details...'}
 CONTACT INFORMATION:
 ${contextFiles.contact || 'Loading contact information...'}
 
-PRODUCT CATALOG:
-${contextFiles.product || 'Loading product information...'}
+SMART PRODUCT RECOMMENDATIONS:
+${smartProducts}
 
 PRIVACY POLICY:
 ${contextFiles.privacy || 'Loading privacy information...'}
@@ -49,9 +51,9 @@ ${chatHistory}
 
 RESPONSE RULES:
 1. CONCISE: Keep responses under 60 words unless complex explanation needed
-2. RELEVANT: Only recommend products that match customer's specific needs/age
+2. RELEVANT: Only recommend products from the SMART PRODUCT RECOMMENDATIONS section
 3. LINKS: Include ONE verified product link per recommendation, format as: [Product Name](https://thegurtoys.com/products/product-slug)
-4. PRODUCT MATCHING: Only recommend products that exist in the catalog - verify URLs before suggesting
+4. PRODUCT MATCHING: Only recommend products that exist in the Smart Recommendations - verify URLs before suggesting
 5. CONTACT: For purchases mention 8300000086, for queries mention 9592020898
 6. PROFESSIONAL: Sound like a knowledgeable customer service representative  
 7. MEMORY: Reference previous conversation context when relevant
@@ -74,7 +76,7 @@ async function callGPT5Nano(systemPrompt: string, userMessage: string): Promise<
         'Authorization': `Bearer ${process.env.A4F_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'provider-6/gpt-5-nano',
+        model: 'provider-6/kimi-k2-instruct',
         messages: [
           {
             role: 'system',
@@ -85,11 +87,12 @@ async function callGPT5Nano(systemPrompt: string, userMessage: string): Promise<
             content: userMessage
           }
         ],
-        max_tokens: 300, // Increased slightly for complete responses
-        temperature: 0.3, // Lower for more focused, consistent responses
-        top_p: 0.8,
-        frequency_penalty: 0.3, // Higher to avoid repetitive language
-        presence_penalty: 0.2
+        max_tokens: 150, // Reduced for faster responses and lower costs
+        temperature: 0.2, // Even lower for more consistent, faster responses
+        top_p: 0.7, // Lower for more focused responses
+        frequency_penalty: 0.4, // Higher to avoid repetitive language
+        presence_penalty: 0.3, // Higher for more diverse responses
+        stream: false // Ensure no streaming for consistent timing
       })
     })
 
@@ -147,10 +150,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     console.log('✅ User confirmed:', user.id)
 
-    // Load context files and chat history in parallel
+    // Load context files (cached) and chat history in parallel
     const [contextFiles, chatHistory] = await Promise.all([
-      loadContextFiles(),
-      getChatHistory(userId, 8) // Last 8 messages for focused context
+      getCachedContextFiles(loadContextFiles),
+      getChatHistory(userId, 6) // Reduced to 6 messages for faster processing
     ])
 
     if (!contextFiles) {
@@ -160,9 +163,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Format chat history for AI context
     const formattedHistory = formatChatHistoryForAI(chatHistory)
+    
+    // Generate smart product recommendations based on user query
+    const smartProducts = getSmartProductContext(message, contextFiles.product)
 
-    // Generate system prompt
-    const systemPrompt = generateSystemPrompt(contextFiles, formattedHistory, user.name)
+    // Generate system prompt with smart recommendations
+    const systemPrompt = generateSystemPrompt(contextFiles, formattedHistory, smartProducts, user.name)
 
     // Save user message
     const savedUserMessage = await saveChatMessage(userId, message, 'user')

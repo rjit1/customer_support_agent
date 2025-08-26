@@ -5,9 +5,27 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-// Service role client for server-side operations
+// Service role client for server-side operations with connection pooling
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
-export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
+export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
+  db: {
+    schema: 'public'
+  },
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false
+  },
+  realtime: {
+    params: {
+      eventsPerSecond: -1
+    }
+  },
+  global: {
+    headers: {
+      'x-connection-pool': 'enabled'
+    }
+  }
+})
 
 // Database types
 export interface User {

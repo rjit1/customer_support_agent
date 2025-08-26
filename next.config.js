@@ -18,9 +18,9 @@ const nextConfig = {
   },
 
   // Performance optimizations
-  experimental: {
-    scrollRestoration: true,
-  },
+  // experimental: {
+  //   scrollRestoration: true,
+  // },
 
   // Headers for security
   async headers() {

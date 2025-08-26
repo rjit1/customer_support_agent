@@ -74,7 +74,7 @@ async function callGPT5Nano(systemPrompt: string, userMessage: string): Promise<
         'Authorization': `Bearer ${process.env.A4F_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'provider-6/llama-4-maverick',
+        model: 'provider-3/qwen-3-235b-a22b',
         messages: [
           {
             role: 'system',
